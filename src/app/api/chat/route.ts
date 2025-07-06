@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateProgramMatch, generateSimpleResponse, enhanceUserProfile, UserProfile } from '@/lib/openrouter'
+import { generateProgramMatch, generateSimpleResponse, UserProfile } from '@/lib/openrouter'
 import { DatabaseService } from '@/lib/database'
 import { UserInputParser } from '@/lib/user-parser'
+import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
     try {
@@ -47,34 +48,79 @@ export async function POST(request: NextRequest) {
             })
         }
 
-        // Generate AI response with program matching
+        // Generate AI response
         const aiResponse = await generateProgramMatch(
             message,
-            enhancedProfile,
+            userProfile,
             programs
         )
 
-        // Enhance user profile with AI
-        const { profile: finalProfile, suggestions: profileSuggestions } = await enhanceUserProfile(
-            message,
-            enhancedProfile
+        if (!aiResponse.success) {
+            return NextResponse.json({
+                success: false,
+                message: aiResponse.message,
+                error: aiResponse.error
+            }, { status: 500 })
+        }
+
+        // Parse AI response to extract program IDs and web results
+        let recommendedProgramIds: string[] = []
+        let webResults: string[] = []
+        let suggestions: string[] = []
+        let confidence = 0.8
+
+        try {
+            // Try to parse JSON response
+            const jsonMatch = aiResponse.message.match(/\{[\s\S]*\}/)
+            if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[0])
+                recommendedProgramIds = parsed.recommendedPrograms || []
+                webResults = parsed.webResults || []
+                suggestions = parsed.suggestions || []
+                confidence = parsed.confidence || 0.8
+            }
+        } catch (_error) {
+            console.log('Could not parse AI response as JSON, using full message')
+        }
+
+        // Get recommended programs from database
+        const recommendedPrograms = programs.filter(program =>
+            recommendedProgramIds.includes(program.id)
         )
 
-        // Combine suggestions
-        const allSuggestions = [
-            ...(aiResponse.suggestions || []),
-            ...profileSuggestions,
-            ...parsedResult.suggestions
-        ].filter((suggestion, index, array) => array.indexOf(suggestion) === index) // Remove duplicates
+        // Save chat message (optional - for analytics)
+        let chatId = null
+        try {
+            const { data: chatData, error: chatError } = await supabase
+                .from('chat_messages')
+                .insert({
+                    user_id: 'anonymous', // Temporary user ID
+                    message: message,
+                    response: aiResponse.message,
+                    recommended_programs: recommendedProgramIds,
+                    web_results: webResults,
+                    confidence: confidence
+                })
+                .select()
+                .single()
+
+            if (chatError) {
+                console.error('Error saving chat message:', chatError)
+            } else {
+                chatId = chatData?.id
+            }
+        } catch (error) {
+            console.error('Could not save chat message:', error)
+        }
 
         return NextResponse.json({
-            success: aiResponse.success,
+            success: true,
             message: aiResponse.message,
-            programs: aiResponse.programs || [],
-            profile: finalProfile,
-            suggestions: allSuggestions,
-            confidence: parsedData.confidence || 0,
-            error: aiResponse.error
+            recommendedPrograms,
+            webResults,
+            suggestions,
+            confidence,
+            chatId: chatId
         })
 
     } catch (error) {

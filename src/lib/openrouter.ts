@@ -1,3 +1,5 @@
+import { searchWeb, searchGovernmentPrograms, searchSpecificPrograms, searchLatestOpportunities, SearchResult } from './web-search'
+
 // Available FREE models for different use cases (100% free, no cost)
 export const AI_MODELS = {
     CHAT: 'meta-llama/llama-3.1-8b-instruct', // Free, excellent for general chat
@@ -153,6 +155,27 @@ export async function generateProgramMatch(
             }
         }
 
+        // Search the web for additional programs
+        let webResults: SearchResult[] = []
+        try {
+            // Extract goals from user profile or message
+            const goals = userProfile.goals ? [userProfile.goals] :
+                userMessage.toLowerCase().includes('scholarship') ? ['scholarship'] :
+                    userMessage.toLowerCase().includes('loan') ? ['loan'] :
+                        userMessage.toLowerCase().includes('training') ? ['training'] :
+                            userMessage.toLowerCase().includes('job') ? ['employment'] :
+                                userMessage.toLowerCase().includes('housing') ? ['housing'] :
+                                    userMessage.toLowerCase().includes('health') ? ['healthcare'] : ['government programs']
+
+            const webSearchResult = await searchSpecificPrograms(userProfile, goals)
+            if (webSearchResult.success) {
+                webResults = webSearchResult.results
+            }
+        } catch (error) {
+            console.error('Web search error:', error)
+            // Continue without web results
+        }
+
         // Create context about available programs
         const programsContext = availablePrograms
             .slice(0, 10) // Limit to first 10 for context
@@ -170,6 +193,12 @@ export async function generateProgramMatch(
             .map(p => `- ${p.title} (${p.category}): ${p.description}`)
             .join('\n')
 
+        // Create web search context
+        const webContext = webResults.length > 0 ?
+            `\n\nAdditional opportunities found online:\n${webResults.map(result =>
+                `- ${result.title}: ${result.snippet} (${result.link})`
+            ).join('\n')}` : ''
+
         // Create user profile context
         const profileContext = Object.entries(userProfile)
             .filter(([_, value]) => value !== undefined && value !== null)
@@ -177,19 +206,20 @@ export async function generateProgramMatch(
             .join(', ')
 
         // Construct the prompt
-        const prompt = `You are Sahulat AI, a government program discovery assistant in Pakistan. You have access to ${availablePrograms.length} government programs.
+        const prompt = `You are Sahulat AI, a government program discovery assistant in Pakistan. You have access to ${availablePrograms.length} government programs in our database and ${webResults.length} additional opportunities found online.
 
-Available Programs:
-${programsContext}
+Available Programs in Database:
+${programsContext}${webContext}
 
 User Profile: ${profileContext || 'Basic profile'}
 User Message: "${userMessage}"
 
 YOUR TASK - RECOMMEND PROGRAMS NOW:
-1. IMMEDIATELY recommend 2-3 specific programs from the list above
-2. For each program, explain: what it is, why it's suitable, benefits, requirements, funding amount, deadline
-3. Provide specific application steps for each program
-4. Only after providing full program details, briefly mention 1-2 missing profile details if needed
+1. IMMEDIATELY recommend 2-3 specific programs from the database list above
+2. If relevant online opportunities are found, mention 1-2 of them as additional options
+3. For each program, explain: what it is, why it's suitable, benefits, requirements, funding amount, deadline
+4. Provide specific application steps for each program
+5. Only after providing full program details, briefly mention 1-2 missing profile details if needed
 
 EXAMPLE RESPONSE FORMAT:
 "Based on your interest in [category], here are specific programs for you:
@@ -204,12 +234,16 @@ EXAMPLE RESPONSE FORMAT:
 2. [Program Name] - [Brief description]
    [Same details as above]
 
+Additional Online Opportunities:
+- [Online Program]: [Brief description] - [Link]
+
 [Brief note about missing info if needed]"
 
 RESPOND IN JSON FORMAT:
 {
   "message": "Your detailed program recommendations as shown above",
   "recommendedPrograms": ["program_id_1", "program_id_2"],
+  "webResults": ["url_1", "url_2"],
   "suggestions": ["Ask for age", "Ask for education level"],
   "confidence": 0.85
 }`

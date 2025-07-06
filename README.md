@@ -1,34 +1,36 @@
 # Sahulat AI - Government Program Discovery Assistant
 
-Sahulat AI is an intelligent assistant that helps users discover government programs, scholarships, loans, skill training, and employment opportunities in Pakistan. Built with Next.js, TypeScript, and powered by free AI models from OpenRouter.
+Sahulat AI is an intelligent assistant that helps users discover government programs in Pakistan, including scholarships, loans, skill training, and employment opportunities. The AI searches both a local database and the internet to provide comprehensive, real-time recommendations.
 
 ## 🌟 Features
 
-### 🤖 Intelligent AI Assistant
-- **Multilingual Support**: English and Urdu language support
-- **Smart Program Matching**: AI-powered recommendations based on user profiles
-- **Free AI Models**: Uses 100% free models from OpenRouter (zero cost)
-- **Contextual Responses**: Understands user intent and provides relevant suggestions
+### 🤖 **AI-Powered Program Matching**
+- **Intelligent Recommendations**: Uses advanced AI to match users with relevant government programs
+- **Profile-Based Matching**: Considers age, education, location, occupation, and goals
+- **Real-Time Web Search**: Searches the internet for latest opportunities beyond the database
+- **Multi-Language Support**: Works in both English and Urdu
+- **Conversational Interface**: Natural language processing for easy interaction
 
-### 🎯 Program Categories
-- **🎓 Scholarships & Education**: Student scholarships, merit-based aid, international opportunities
-- **💰 Business & Financial**: Small business loans, entrepreneurship programs, agricultural support
-- **🔧 Skill Development**: Technical training, IT programs, vocational courses
-- **💼 Employment & Jobs**: Job placement, internships, public sector opportunities
-- **🏠 Housing & Infrastructure**: Affordable housing, home improvement grants
-- **🏥 Healthcare & Medical**: Health insurance, medical support, disability assistance
+### 🔍 **Comprehensive Search**
+- **Database Programs**: Curated government programs with detailed information
+- **Web Search Integration**: Real-time internet search for latest opportunities
+- **Multiple Sources**: Combines local database with online results
+- **Smart Filtering**: Category-based filtering (scholarships, loans, training, etc.)
 
-### 💬 Interactive Chat Interface
-- **Quick Filter Buttons**: One-click access to specific program categories
-- **Voice Input**: Speech recognition for hands-free interaction
-- **Real-time Responses**: Instant AI-powered recommendations
-- **User Profile Tracking**: Remembers user information for personalized suggestions
+### 📊 **Program Categories**
+- **Scholarships**: Educational funding and academic opportunities
+- **Loans**: Business, personal, and agricultural loan programs
+- **Training**: Skill development and vocational training programs
+- **Employment**: Government jobs and employment assistance
+- **Housing**: Affordable housing schemes and assistance
+- **Healthcare**: Medical programs and health insurance schemes
 
-### 🔧 Technical Features
-- **TypeScript**: Full type safety and better development experience
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Database Integration**: PostgreSQL with Supabase for program storage
-- **Error Handling**: Graceful fallbacks when AI service is unavailable
+### 🎯 **User Experience**
+- **Smart Profile Building**: Automatically extracts user information from conversations
+- **Confidence Scoring**: Shows AI confidence in recommendations
+- **Direct Links**: One-click access to program applications
+- **Progress Tracking**: Saves conversation history and recommendations
+- **Mobile Responsive**: Works seamlessly on all devices
 
 ## 🚀 Quick Start
 
@@ -36,148 +38,182 @@ Sahulat AI is an intelligent assistant that helps users discover government prog
 - Node.js 18+ 
 - npm or yarn
 - Supabase account (free tier)
-- OpenRouter account (free tier)
+- OpenRouter API key (free tier)
+- Serper API key (optional, for enhanced web search)
 
-### Installation
+### 1. Clone and Install
+```bash
+git clone https://github.com/yourusername/sahulat-ai.git
+cd sahulat-ai
+npm install
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd sahulat-ai
-   ```
+### 2. Environment Setup
+Create a `.env.local` file in the root directory:
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-3. **Set up environment variables**
-   Create a `.env.local` file:
-   ```bash
-   # Supabase Configuration
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+# OpenRouter AI (Free Tier)
+OPENROUTER_API_KEY=your_openrouter_api_key
 
-   # OpenRouter Configuration (Free AI Models)
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   ```
+# Web Search (Optional - Free Tiers Available)
+SERPER_API_KEY=your_serper_api_key  # 100 free searches/month
+```
 
-4. **Set up the database**
-   - Follow the [Supabase Setup Guide](SUPABASE_SETUP.md)
-   - Run the database schema setup
-   - Insert sample government programs
+### 3. Database Setup
+Run the database setup to create tables and sample data:
 
-5. **Start the development server**
 ```bash
 npm run dev
+# Visit http://localhost:3000/api/setup-db to initialize database
+```
+
+### 4. Start Development
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` to start using Sahulat AI!
+
+## 🔧 API Setup Guide
+
+### OpenRouter AI (Free)
+1. Visit [OpenRouter](https://openrouter.ai/)
+2. Sign up for a free account
+3. Get your API key from the dashboard
+4. Add to `.env.local`: `OPENROUTER_API_KEY=your_key`
+
+### Serper Web Search (Free Tier)
+1. Visit [Serper.dev](https://serper.dev/)
+2. Sign up for free tier (100 searches/month)
+3. Get your API key
+4. Add to `.env.local`: `SERPER_API_KEY=your_key`
+
+### Supabase Database (Free)
+1. Visit [Supabase](https://supabase.com/)
+2. Create a new project
+3. Get your project URL and keys
+4. Add to `.env.local`:
    ```
-
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 🛠️ Setup Guides
-
-### Supabase Database Setup
-See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for detailed instructions on:
-- Creating a Supabase project
-- Setting up the database schema
-- Inserting sample government programs
-- Configuring authentication
-
-### OpenRouter AI Setup
-See [OPENROUTER_SETUP.md](OPENROUTER_SETUP.md) for:
-- Getting free API access
-- Configuring AI models
-- Understanding the free tier benefits
-- Troubleshooting AI integration
-
-## 💡 Usage
-
-### Getting Started
-1. **Open the chat interface** at [http://localhost:3000](http://localhost:3000)
-2. **Choose your language** (English or Urdu)
-3. **Use quick filters** or type your request
-4. **Get personalized recommendations** based on your profile
-
-### Quick Filter Buttons
-Click any category button to get instant recommendations:
-- **Scholarships**: Educational opportunities and financial support
-- **Loans**: Business loans and financial assistance
-- **Training**: Skill development and vocational courses
-- **Jobs**: Employment opportunities and job placement
-- **Housing**: Housing assistance and affordable housing
-- **Healthcare**: Healthcare support and medical assistance
-
-### Voice Input
-- Click the microphone button
-- Speak your request in English or Urdu
-- The system will transcribe and process your request
-
-### Profile Building
-The system automatically extracts and remembers:
-- Age and gender
-- Education level
-- Location
-- Goals and interests
-- Income level
-- Occupation
-- Family size
-- Disabilities
-- Languages spoken
+   NEXT_PUBLIC_SUPABASE_URL=your_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   ```
 
 ## 🏗️ Architecture
 
 ### Frontend
 - **Next.js 15**: React framework with App Router
 - **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **Lucide Icons**: Beautiful icon library
-- **shadcn/ui**: Modern component library
+- **Tailwind CSS**: Modern styling
+- **Shadcn/ui**: Beautiful UI components
+- **Lucide Icons**: Consistent iconography
 
 ### Backend
 - **Next.js API Routes**: Serverless API endpoints
-- **Supabase**: PostgreSQL database and authentication
-- **OpenRouter**: Free AI model integration
-- **User Input Parser**: Intelligent profile extraction
+- **Supabase**: PostgreSQL database with real-time features
+- **OpenRouter**: AI model integration (free models)
+- **Web Search**: Internet search for real-time opportunities
 
 ### AI Integration
-- **Free Models**: 100% free AI models from OpenRouter
-- **Smart Fallbacks**: Works even when AI is unavailable
-- **Multilingual**: Supports English and Urdu
-- **Context Awareness**: Understands user intent and profile
+- **Multiple Models**: Uses different AI models for different tasks
+- **Fallback System**: Automatic fallback if primary model fails
+- **Web Search**: Combines database results with internet search
+- **Profile Enhancement**: AI-powered user profile building
 
-## 📊 Database Schema
+### Database Schema
+```sql
+-- Government programs table
+CREATE TABLE government_programs (
+  id UUID PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT,
+  eligibility_criteria TEXT,
+  benefits TEXT,
+  requirements TEXT,
+  funding_amount TEXT,
+  application_deadline DATE,
+  application_link TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
 
-The system includes comprehensive government program data:
-- Program titles and descriptions (bilingual)
-- Eligibility criteria
-- Benefits and requirements
-- Funding amounts and deadlines
-- Application information
-- Categories and tags
+-- User profiles table
+CREATE TABLE user_profiles (
+  id UUID PRIMARY KEY,
+  age INTEGER,
+  gender TEXT,
+  education TEXT,
+  location TEXT,
+  goals TEXT,
+  income TEXT,
+  occupation TEXT,
+  family_size INTEGER,
+  disabilities TEXT,
+  languages TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
 
-## 🔒 Privacy & Security
+-- Chat messages table
+CREATE TABLE chat_messages (
+  id UUID PRIMARY KEY,
+  user_id TEXT,
+  message TEXT NOT NULL,
+  response TEXT NOT NULL,
+  recommended_programs TEXT[],
+  web_results TEXT[],
+  confidence DECIMAL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
 
-- **No data storage**: User profiles are session-based
-- **Secure API calls**: All external calls use HTTPS
-- **Environment variables**: Sensitive data is properly secured
-- **Free tier usage**: No cost for AI model usage
+## 🎯 Usage Examples
+
+### Finding Scholarships
+```
+User: "I'm a 22-year-old student looking for scholarships for computer science"
+AI: Recommends relevant scholarships with eligibility, benefits, and application steps
+```
+
+### Business Loans
+```
+User: "I need a loan to start a small business in Lahore"
+AI: Finds government loan programs with requirements and application process
+```
+
+### Skill Training
+```
+User: "I want to learn digital marketing skills"
+AI: Suggests government training programs and online opportunities
+```
 
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
-1. Push your code to GitHub
-2. Connect your repository to Vercel
+1. Push code to GitHub
+2. Connect repository to Vercel
 3. Add environment variables in Vercel dashboard
 4. Deploy automatically
 
-### Other Platforms
-The app can be deployed to any platform that supports Next.js:
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
+### Environment Variables for Production
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_production_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_production_service_role_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+SERPER_API_KEY=your_serper_api_key
+```
+
+## 🔒 Security & Privacy
+
+- **No Data Storage**: User conversations are not permanently stored
+- **Anonymous Users**: No personal information required
+- **Secure APIs**: All API keys are server-side only
+- **HTTPS Only**: All communications are encrypted
 
 ## 🤝 Contributing
 
@@ -189,26 +225,19 @@ The app can be deployed to any platform that supports Next.js:
 
 ## 📝 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-If you encounter any issues:
-1. Check the setup guides for your specific service
-2. Review the console for error messages
-3. Ensure all environment variables are set correctly
-4. Verify database connectivity and AI service status
+- **OpenRouter**: Free AI model access
+- **Supabase**: Database and backend services
+- **Serper**: Web search capabilities
+- **Next.js**: React framework
+- **Shadcn/ui**: UI components
 
-## 🎯 Roadmap
+## 📞 Support
 
-- [ ] Add more government programs
-- [ ] Implement program application tracking
-- [ ] Add notification system for deadlines
-- [ ] Create admin dashboard for program management
-- [ ] Add program rating and review system
-- [ ] Implement advanced search and filtering
-- [ ] Add program comparison features
-- [ ] Create mobile app version
+For support, email support@sahulat-ai.com or create an issue on GitHub.
 
 ---
 
